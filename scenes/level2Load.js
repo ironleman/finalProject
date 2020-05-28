@@ -1,6 +1,6 @@
-class level1Load extends Phaser.Scene {
+class level2Load extends Phaser.Scene {
     constructor() {
-        super("level1Transition");
+        super("level2Transition");
     }
 
     preload() {
@@ -8,7 +8,7 @@ class level1Load extends Phaser.Scene {
 
     }
     create() {
-        this.add.image(centerX, centerY, 'level1load');
+        this.add.image(centerX, centerY, 'level2load');
 
         this.levelSound = this.sound.add("levelStart");
         this.levelConfig = {
@@ -22,9 +22,9 @@ class level1Load extends Phaser.Scene {
         }
         
         this.levelSound.play(this.levelConfig);
-        this.timer= this.time.delayedCall(1500, () => {
+        this.timer= this.time.delayedCall(1000, () => {
            
-            this.scene.start("level1Scene");
+            this.scene.start("level2Scene");
 
         }, null, this);
     }

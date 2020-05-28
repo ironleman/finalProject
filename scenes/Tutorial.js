@@ -28,6 +28,11 @@ class Tutorial extends Phaser.Scene {
         // pufferfish speed and sprite setup
         this.pufferFishVelocity = 400;
         this.arrowKeys = this.add.sprite(game.config.width/2 + 700, game.config.height/2 + 700, 'arrowKeys').setScale(0.75); 
+        this.add.image(2100, 1325, 'arrow');//add arrow showing where the player is to move
+        this.water = this.physics.add.sprite(4275, 1750, 'waterPickup').setScale(0.5);
+        this.water1 = this.physics.add.sprite(4615, 1500, 'waterPickup').setScale(0.5);
+        this.water0 = this.physics.add.sprite(centerX + 1500, centerY, 'waterPickup').setScale(0.5);
+        this.water2 = this.physics.add.sprite(4955, 1250, 'waterPickup').setScale(0.5);
 
         this.pufferFish = this.physics.add.sprite(centerX, centerY + 700, 'pufferFish').setScale(0.6);
         this.pufferFish.body.setOffset(4,4);
@@ -37,33 +42,35 @@ class Tutorial extends Phaser.Scene {
         this.chain = this.physics.add.sprite(6500, 900, 'chain');
         this.shark = this.physics.add.sprite(6000, 1300, 'shark');
         this.sharkVel = 200;
-
+        this.add.image(6500, 1700, 'scareShark').setScale(4);
         this.shark.body.setVelocityX(this.sharkVel).setSize(this.shark.width, this.shark.height/2);
         this.shark.setImmovable();
 
         //this.stone1 = this.physics.add.sprite(300, 300, 'stone1');
-        this.stone3 = this.physics.add.sprite(3200, 2150, 'stone3').setSize(100,200).setScale(4);
+        //bottom front
+        this.stone3 = this.physics.add.sprite(2675, 2150, 'rock').setSize(125,300).setScale(4);
         this.stone3.rotation = Math.PI/2*3;
-        this.stone3a = this.physics.add.sprite(3000, 100, 'stone3').setSize(100,200).setScale(4);
+        // top front
+        this.stone3a = this.physics.add.sprite(2500, 650, 'rock').setSize(100,310).setScale(4);
         this.stone3a.rotation = Math.PI/2*3;
-        this.stone3c = this.physics.add.sprite(3700, 1400, 'stone3').setSize(100, 200).setScale(4);
+        this.stone3c = this.physics.add.sprite(3300, 1200, 'rock').setSize(120, 300).setScale(4);
         this.stone3c.rotation = Math.PI/2;
-        this.stone3b = this.physics.add.sprite(3400, 900, 'stone3').setScale(4);
-        this.stone4 = this.physics.add.sprite(3000, 800, 'stone4').setScale(2);
-        this.stone5 = this.physics.add.sprite(3000, 1500, 'stone5').setScale(2);
+        this.stone3b = this.physics.add.sprite(3400, 800, 'rock').setScale(4);
+        //this.stone4 = this.physics.add.sprite(3000, 800, 'rock').setScale(2);
+        this.stone5 = this.physics.add.sprite(2600, 1500, 'rock').setScale(2);
 
-        // anchors
-        this.anchor1 = this.physics.add.sprite(4000, 500, 'anchor').setScale(4);
+        // anchors in equidistant positions
+        this.anchor1 = this.physics.add.sprite(4100, 500, 'anchor').setScale(4);
         this.anchor1.body.setVelocityY(300);
-        this.anchor2 = this.physics.add.sprite(4340, 500, 'anchor').setScale(4);
+        this.anchor2 = this.physics.add.sprite(4440, 500, 'anchor').setScale(4);
         this.anchor2.body.setVelocityY(300);
-        this.anchor3 = this.physics.add.sprite(4670, 500, 'anchor').setScale(4);
+        this.anchor3 = this.physics.add.sprite(4780, 500, 'anchor').setScale(4);
         this.anchor3.body.setVelocityY(300);
-        this.anchor4 = this.physics.add.sprite(5000, 500, 'anchor').setScale(4);
+        this.anchor4 = this.physics.add.sprite(5120, 500, 'anchor').setScale(4);
         this.anchor4.body.setVelocityY(300);
 
         this.stone5.body.immovable = true;
-        this.stone4.body.immovable = true;
+        //this.stone4.body.immovable = true;
         this.stone3.body.immovable = true;
         this.stone3a.body.immovable = true;
         this.stone3b.body.immovable = true;
@@ -87,6 +94,18 @@ class Tutorial extends Phaser.Scene {
         this.cameras.main.startFollow(this.pufferFish, true, 0.1, 0.1);
         this.cameras.main.followOffset.set(-300, 0);
         
+        //add groovy kelp to bottom of screen equidistant to form a kelp bed
+        this.kelp1 = this.add.sprite(100, 2100, 'kelp').setScale(2);
+        this.kelp2 = this.add.sprite(450, 2100, 'kelp').setScale(2);
+        this.kelp3 = this.add.sprite(800, 2100, 'kelp').setScale(2);
+        this.kelp4 = this.add.sprite(1150, 2100, 'kelp').setScale(2);
+        this.kelp5 = this.add.sprite(1500, 2100, 'kelp').setScale(2);
+        this.kelp6 = this.add.sprite(1850, 2100, 'kelp').setScale(2);
+        this.kelp7 = this.add.sprite(2200, 2100, 'kelp').setScale(2);
+
+        
+
+
         // control configs
         cursors = this.input.keyboard.createCursorKeys();
         this.keyboard1 = this.input.keyboard.addKey("ONE");
@@ -136,13 +155,19 @@ class Tutorial extends Phaser.Scene {
             frameRate: 0.5
         });
 
+        this.anims.create({
+            key: 'kelpdance',
+            frames: this.anims.generateFrameNumbers('kelp', { start: 0, end: 2, first:0}),
+            frameRate: 5
+        })
         // colliders
         this.physics.add.collider(this.pufferFish, this.stone5);
-        this.physics.add.collider(this.pufferFish, this.stone4);
+        //this.physics.add.collider(this.pufferFish, this.stone4);
         this.physics.add.collider(this.pufferFish, this.stone3);
         this.physics.add.collider(this.pufferFish, this.stone3a);
         this.physics.add.collider(this.pufferFish, this.stone3b);
         this.physics.add.collider(this.pufferFish, this.stone3c);
+        this.physics.add.collider(this.pufferFish, this.arrow);
 
         this.waterLevel = this.physics.add.sprite(0, 0, 'water').setAlpha(0.3).setOrigin(0).setScale(12);
 
@@ -184,9 +209,20 @@ class Tutorial extends Phaser.Scene {
     } 
 
     update() {
+
+        //play wavy kelp animations
+        this.kelp1.anims.play('kelpdance', true);
+        this.kelp2.anims.play('kelpdance', true);
+        this.kelp3.anims.play('kelpdance', true);
+        this.kelp4.anims.play('kelpdance', true);
+        this.kelp5.anims.play('kelpdance', true);
+        this.kelp6.anims.play('kelpdance', true);
+        this.kelp7.anims.play('kelpdance', true);
+       
         ///////////////////////////////////////////////////////////////
         // paused menu
         if(Phaser.Input.Keyboard.JustDown(keySpace)){
+            pauseScene = "tutorialScene";
             this.scene.pause();
             this.scene.launch('pauseScene');
         }
@@ -223,8 +259,7 @@ class Tutorial extends Phaser.Scene {
             this.anchor4.body.setVelocityY(300);
         }
 
-
-        this.waterLevel.y += 0.25;
+        this.waterLevel.y += 0.3;
         this.physics.world.setBounds(0, this.waterLevel.y, 1920*5, 2150 - this.waterLevel.y);
         /////////////////////////////////////////////////////////////////////////////////////////
         // keyboard inputs changing size and keypad indicators
@@ -309,6 +344,23 @@ class Tutorial extends Phaser.Scene {
 
         //////////////////////////////////////////////////////////////////////////////////
         // collision detection
+        if (this.physics.overlap(this.pufferFish, this.water)) {
+            this.water.destroy();
+            this.waterLevel.y -= 50;
+        }
+        if (this.physics.overlap(this.pufferFish, this.water1)) {
+            this.water1.destroy();
+            this.waterLevel.y -= 50;
+        }
+        if (this.physics.overlap(this.pufferFish, this.water0)) {
+            this.water0.destroy();
+            this.waterLevel.y -= 50;
+        }
+        if (this.physics.overlap(this.pufferFish, this.water2)) {
+            this.water2.destroy();
+            this.waterLevel.y -= 50;
+        }
+
         if (this.physics.overlap(this.pufferFish, this.shark)){
             this.gameOver = true;
         }
@@ -359,45 +411,19 @@ class Tutorial extends Phaser.Scene {
    
         }
         if (this.levelComplete == true) {
-            this.scene.start('level1load');
+            this.scene.start('level1Transition');
         }
 
+        if (this.waterLevel.y == 2150) {
+            this.gameOver = true;
+        }
         if (this.gameOver == true) {
-            /* this.add.text(this.pufferFish.x + 100, this.pufferFish.y - 400, 'Game Over');
-            this.add.text(this.pufferFish.x + 100, this.pufferFish.y - 200, 'Press R to Restart');
-            this.scene.pause()
-            if (this.scene.isPaused()) {
-                this.restartKey.on('down', () => {
-                this.scene.start('tutorialScene');
-                })
-            }
-            */
-           this.scene.restart();
+
+           this.scene.start('tutorialScene');
         }
     }
 
-      //For display timer
-      formatTime(seconds){
 
-        // Minutes
-        var minutes = Math.floor(seconds/60);
-        // Seconds
-        var partInSeconds = seconds%60;
-        // Adds left zeros to seconds
-        partInSeconds = partInSeconds.toString().padStart(2,'0');
-        // Returns formated time
-        return `${minutes}:${partInSeconds}`;
-    }
-    //Time decrement
-    onEvent(){
-        if(this.initialTime>=1){
-            this.initialTime -= 1; // One second
-            //timeText.setText('Water Level: ' + this.formatTime(this.initialTime));
-        }else{
-            if (this.levelComplete == false) {
-                this.gameOver = true;    // Pause the scene
-           }
-        }
-    }
+    
 
 }
