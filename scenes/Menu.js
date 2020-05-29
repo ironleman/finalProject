@@ -4,8 +4,9 @@ class Menu extends Phaser.Scene {
     }
 
     preload(){
-        // loads background music
-        this.load.audio('BGMusic',"./assets/BGMusic.mp3");
+        // loads background musics
+        this.load.audio('BGMusic','./assets/BGMusic.mp3');
+        this.load.audio('BGMusic2', './assets/BGMusic2.mp3');
     }
     create() {
         //add the coral reef background image

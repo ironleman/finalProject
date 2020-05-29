@@ -207,9 +207,9 @@ class Level1 extends Phaser.Scene {
 
         this.waterLevel = this.physics.add.sprite(0, 0, 'water').setAlpha(0.3).setOrigin(0).setScale(12);
 
-        // plays BGMusic in loop
+        // plays BGMusic2 in loop
         // feel free to change the config
-        this.music = this.sound.add("BGMusic");
+        this.music = this.sound.add("BGMusic2");
         let musicConfig = {
             mute: false,
             volume: 1,
