@@ -8,7 +8,7 @@ class Level1 extends Phaser.Scene {
 
     }
     create() {
-
+        this.controllerLock = false;
         //some parameters
         this.j = 0;
         this.k = 0;
@@ -335,7 +335,7 @@ class Level1 extends Phaser.Scene {
 
         this.physics.world.setBounds(0, this.waterLevel.y, 1920*5, 2150 - this.waterLevel.y);
 
-        //check eel collision
+        /*check eel collision
         if (this.physics.overlap(this.pufferFish, this.eel)) {
             this.music.stop();
             this.scene.restart();
@@ -352,7 +352,7 @@ class Level1 extends Phaser.Scene {
             this.music.stop();
             this.scene.restart();
         }
-    
+    */
         //check crate collision
         if (this.physics.collide(this.pufferFish, this.crate) && this.pufferFishShape === 'fat') {
             this.crate.destroy();
@@ -432,23 +432,24 @@ class Level1 extends Phaser.Scene {
 
         ////////////////////////////////////////////////////////////////////////
         // player controls for pufferfish
-        if(cursors.up.isDown) {
-            this.pufferFish.body.setVelocityY(-this.pufferFishVelocity);
-        } else if (cursors.down.isDown) {
-            this.pufferFish.body.setVelocityY(this.pufferFishVelocity);
-        } else {
-            this.pufferFish.body.setVelocityY(0);
+        if (this.controllerLock == false) {
+            if(cursors.up.isDown) {
+                this.pufferFish.body.setVelocityY(-this.pufferFishVelocity);
+            } else if (cursors.down.isDown) {
+                this.pufferFish.body.setVelocityY(this.pufferFishVelocity);
+            } else {
+                this.pufferFish.body.setVelocityY(0);
+            }
+            if(cursors.left.isDown) {
+                this.pufferFish.body.setVelocityX(-this.pufferFishVelocity);
+                this.pufferFish.setFlipX(true);
+            } else if (cursors.right.isDown) {
+                this.pufferFish.body.setVelocityX(this.pufferFishVelocity);
+                this.pufferFish.resetFlip();
+            } else {
+                this.pufferFish.body.setVelocityX(0);
+            }
         }
-        if(cursors.left.isDown) {
-            this.pufferFish.body.setVelocityX(-this.pufferFishVelocity);
-            this.pufferFish.setFlipX(true);
-        } else if (cursors.right.isDown) {
-            this.pufferFish.body.setVelocityX(this.pufferFishVelocity);
-            this.pufferFish.resetFlip();
-        } else {
-            this.pufferFish.body.setVelocityX(0);
-        }
-
         //anchor animation
         //anchor#1
         if (this.anchor1.y > 350) {
@@ -596,7 +597,12 @@ class Level1 extends Phaser.Scene {
         if (this.physics.overlap(this.pufferFish, this.eel3)){
             this.gameOver = true;
         }
-        
+        if (this.physics.overlap(this.shark1, this.pufferFish)) {
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.shark2)) {
+            this.gameOver = true;
+        }
         //shark aimation
         if (this.shark1.x >= this.anchor5.x+200) {
             this.shark1.body.setVelocityX(-this.sharkVel);
@@ -614,25 +620,21 @@ class Level1 extends Phaser.Scene {
         }
 
         //check scare the shark
-        if (Math.abs(this.pufferFish.x - this.shark1.x) < 300 && Math.abs(this.pufferFish.y - this.shark1.y) < 300 && this.pufferFishShape == 'fat') {
+        if (Math.abs(this.pufferFish.x - this.shark1.x) < 1000 && Math.abs(this.pufferFish.y - this.shark1.y) < 1000 && this.pufferFishShape == 'fat') {
             this.shark1.anims.play('sharkSpook', true);
             this.shark1.body.setVelocityY(-300).setSize(this.shark1.width/2, this.shark1.height/2);
             if(this.j == 0) {
                 this.sharkSound.play(this.sharkConfig);
             }
             this.j++;
-        }else if (Math.abs(this.pufferFish.x - this.shark1.x) < 100 && Math.abs(this.pufferFish.y - this.shark1.y) < 100 && this.pufferFishShape != 'fat'){
-            this.gameOver = true;
         }
-        if (Math.abs(this.pufferFish.x - this.shark2.x) < 500 && Math.abs(this.pufferFish.y - this.shark2.y) < 500 && this.pufferFishShape == 'fat') {
+        if (Math.abs(this.pufferFish.x - this.shark2.x) < 1000 && Math.abs(this.pufferFish.y - this.shark2.y) < 1000 && this.pufferFishShape == 'fat') {
             this.shark2.anims.play('sharkSpook', true);
             this.shark2.body.setVelocityY(-300).setSize(this.shark2.width/2, this.shark2.height/2);
             if(this.i == 0) {
                 this.sharkSound.play(this.sharkConfig);
             }
             this.i++;
-        }else if (Math.abs(this.pufferFish.x - this.shark2.x) < 100 && Math.abs(this.pufferFish.y - this.shark2.y) < 100 && this.pufferFishShape != 'fat'){
-            this.gameOver = true;
         }
         
         //goal check
@@ -664,12 +666,16 @@ class Level1 extends Phaser.Scene {
         }
         
         if (this.gameOver == true) {
+            this.controllerLock = true;
+            this.pufferFish.body.setVelocityX(0);
+            this.pufferFish.body.setVelocityY(0);
+
             if (this.l == 0) {
                 this.deathSound.play(this.deathConfig);
             }
             this.l++;
             this.pufferFish.anims.play('dead', true);
-            this.time.delayedCall(1500, () =>{
+            this.time.delayedCall(1300, () =>{
                 this.scene.pause();
                 this.scene.launch('gameOverScene');
             }, null, this);

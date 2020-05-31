@@ -48,6 +48,7 @@ class PauseMenu extends Phaser.Scene {
             self.scene.start(pauseScene);
         })
         menuButton.on('pointerdown',function(pointer){
+            self.scene.stop();
             self.scene.start("menuScene");
 
         })

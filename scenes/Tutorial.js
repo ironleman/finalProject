@@ -8,7 +8,7 @@ class Tutorial extends Phaser.Scene {
 
     }
     create() {
-        this.controlLock = false;
+        this.controllerLock = false;
         this.shapeShiftable = "all";
         this.i = 0;
         this.j = 0;
@@ -286,7 +286,7 @@ class Tutorial extends Phaser.Scene {
         /////////////////////////////////////////////////////////////////////////////////////////
         // keyboard inputs changing size and keypad indicators
         //when key1 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation back to original form and adjust hitbox accordingly
-        if (this.controlLock == false){
+        if (this.controllerLock == false){
             this.keyboard1.on('down', () => {    
                 this.pufferFishShape = 'normal'; 
                         
@@ -351,21 +351,23 @@ class Tutorial extends Phaser.Scene {
 
         ////////////////////////////////////////////////////////////////////////
         // player controls for pufferfish
-        if(cursors.up.isDown) {
-            this.pufferFish.body.setVelocityY(-this.pufferFishVelocity);
-        } else if (cursors.down.isDown) {
-            this.pufferFish.body.setVelocityY(this.pufferFishVelocity);
-        } else {
-            this.pufferFish.body.setVelocityY(0);
-        }
-        if(cursors.left.isDown) {
-            this.pufferFish.body.setVelocityX(-this.pufferFishVelocity);
-            this.pufferFish.setFlipX(true);
-        } else if (cursors.right.isDown) {
-            this.pufferFish.body.setVelocityX(this.pufferFishVelocity);
-            this.pufferFish.resetFlip();
-        } else {
-            this.pufferFish.body.setVelocityX(0);
+        if (this.controllerLock == false){
+            if(cursors.up.isDown) {
+                this.pufferFish.body.setVelocityY(-this.pufferFishVelocity);
+            } else if (cursors.down.isDown) {
+                this.pufferFish.body.setVelocityY(this.pufferFishVelocity);
+            } else {
+                this.pufferFish.body.setVelocityY(0);
+            }
+            if(cursors.left.isDown) {
+                this.pufferFish.body.setVelocityX(-this.pufferFishVelocity);
+                this.pufferFish.setFlipX(true);
+            } else if (cursors.right.isDown) {
+                this.pufferFish.body.setVelocityX(this.pufferFishVelocity);
+                this.pufferFish.resetFlip();
+            } else {
+                this.pufferFish.body.setVelocityX(0);
+            }
         }
         //////////////////////////////////////////////////////////////////////////////////
         // shark roaming back and forth
@@ -453,13 +455,16 @@ class Tutorial extends Phaser.Scene {
             this.gameOver = true;
         }
         if (this.gameOver == true) {
+            this.controllerLock = true;
+            this.pufferFish.body.setVelocityX(0);
+            this.pufferFish.body.setVelocityY(0);
             if (this.l == 0) {
                 this.deathSound.play(this.deathConfig);
             }
             this.l++;
             this.controlLock = true;
             this.pufferFish.anims.play('dead', true);
-            this.time.delayedCall(1500, () =>{
+            this.time.delayedCall(1300, () =>{
             this.scene.pause();
             this.scene.launch('gameOverScene');
             }, null, this);
