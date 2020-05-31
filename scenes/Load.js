@@ -32,6 +32,7 @@ class Load extends Phaser.Scene {
         this.load.image('chain', 'Chain.png');
         this.load.audio('poof', 'poof.wav');
         this.load.audio('tink', 'tink.wav');
+        this.load.audio('deathSound', 'deathsound.wav');
         this.load.audio('sharkScream', 'sharkScream.ogg');
         this.load.audio('levelStart', 'levelStart.wav');
         this.load.image('level1BG', 'level1bg.png');

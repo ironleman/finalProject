@@ -13,6 +13,7 @@ class Tutorial extends Phaser.Scene {
         this.i = 0;
         this.j = 0;
         this.k = 0;
+        this.l = 0;
         this.levelComplete = false;
         //some parameters
         this.gameOver = false;
@@ -190,6 +191,16 @@ class Tutorial extends Phaser.Scene {
             delay: 0
         }
 
+        this.deathSound = this.sound.add("deathSound");
+        this.deathConfig= {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
         this.tinkSound = this.sound.add("tink");
         this.tinkConfig = {
             mute: false,
@@ -442,6 +453,10 @@ class Tutorial extends Phaser.Scene {
             this.gameOver = true;
         }
         if (this.gameOver == true) {
+            if (this.l == 0) {
+                this.deathSound.play(this.deathConfig);
+            }
+            this.l++;
             this.controlLock = true;
             this.pufferFish.anims.play('dead', true);
             this.time.delayedCall(1500, () =>{

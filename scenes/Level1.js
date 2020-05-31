@@ -13,6 +13,7 @@ class Level1 extends Phaser.Scene {
         this.j = 0;
         this.k = 0;
         this.i = 0;
+        this.l = 0;
         this.add.image(0, 0, 'level2BG').setScale(35);
         
         this.gameOver = false;
@@ -248,7 +249,16 @@ class Level1 extends Phaser.Scene {
             loop: false,
             delay: 0
         }
-
+        this.deathSound = this.sound.add("deathSound");
+        this.deathConfig= {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
         this.sharkSound = this.sound.add("sharkScream");
         this.sharkConfig = {
             mute: false,
@@ -654,6 +664,10 @@ class Level1 extends Phaser.Scene {
         }
         
         if (this.gameOver == true) {
+            if (this.l == 0) {
+                this.deathSound.play(this.deathConfig);
+            }
+            this.l++;
             this.pufferFish.anims.play('dead', true);
             this.time.delayedCall(1500, () =>{
                 this.scene.pause();
