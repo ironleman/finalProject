@@ -40,6 +40,11 @@ class Load extends Phaser.Scene {
         this.load.image('level3load', 'level3.png');
         this.load.image('waterPickup', 'water.png');
         this.load.image('level2BG', 'level2bg.png');
+        this.load.image("resume", "resumeButton.png");
+        this.load.image("restart", "restartButton.png");
+        this.load.image("Pbackground", "pauseBackground.png");
+        this.load.image("menu", "menuButton.png");
+        this.load.image("gameOver", "GameOverScreen.png");
         this.load.image('crate', 'crate.png');
         this.load.image('eel', 'eel.png');
         this.load.image('seahorse', 'seahorse.png');
@@ -71,6 +76,10 @@ class Load extends Phaser.Scene {
             frameWidth: 640,
             frameHeight: 640,
         });
+        this.load.spritesheet("deathAnim", "deathAnim.png", {
+            frameWidth: 408,
+            frameHeight: 255,
+        })
         this.load.video("oceanfloor", "Ocean Floor.mp4");
         this.load.image("play", "Play Button.png");
         this.load.image("select", "SelectionButton.png");

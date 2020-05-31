@@ -12,10 +12,10 @@ class Level1 extends Phaser.Scene {
         //some parameters
         this.j = 0;
         this.k = 0;
-
+        this.i = 0;
         this.add.image(0, 0, 'level2BG').setScale(35);
         
-
+        this.gameOver = false;
         this.pufferFishShape = 'normal';
         this.pufferFishVelocity = 400;
         this.pufferFish = this.physics.add.sprite(centerX, centerY + 700, 'pufferFish').setScale(0.6);
@@ -203,7 +203,13 @@ class Level1 extends Phaser.Scene {
             key: 'kelpdance',
             frames: this.anims.generateFrameNumbers('kelp', { start: 0, end: 2, first:0}),
             frameRate: 5
-        })
+        });
+
+        this.anims.create({
+            key: 'dead',
+            frames: this.anims.generateFrameNumbers('deathAnim', { start: 0, end: 8, first: 0}),
+            frameRate: 6
+        });
 
         this.waterLevel = this.physics.add.sprite(0, 0, 'water').setAlpha(0.3).setOrigin(0).setScale(12);
 
@@ -281,6 +287,8 @@ class Level1 extends Phaser.Scene {
         this.physics.add.collider(this.pufferFish, this.crate4);
         this.physics.add.collider(this.pufferFish, this.crate5);
         
+
+        pauseScene = "level1Scene";
     } 
 
     update() { 
@@ -358,7 +366,6 @@ class Level1 extends Phaser.Scene {
         ///////////////////////////////////////////////////////////////
         // paused menu
         if(Phaser.Input.Keyboard.JustDown(keySpace)){
-            pauseScene = "level1Scene";
             this.scene.pause();
             this.scene.launch('pauseScene');
         }
@@ -550,44 +557,34 @@ class Level1 extends Phaser.Scene {
 
         //check collision to restart
         if (this.physics.overlap(this.pufferFish, this.anchor1)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.anchor2)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.anchor3)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.anchor4)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.anchor5)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.anchor6)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.eel)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.eel1)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.eel2)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.eel3)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         
         //shark aimation
@@ -615,19 +612,17 @@ class Level1 extends Phaser.Scene {
             }
             this.j++;
         }else if (Math.abs(this.pufferFish.x - this.shark1.x) < 100 && Math.abs(this.pufferFish.y - this.shark1.y) < 100 && this.pufferFishShape != 'fat'){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (Math.abs(this.pufferFish.x - this.shark2.x) < 500 && Math.abs(this.pufferFish.y - this.shark2.y) < 500 && this.pufferFishShape == 'fat') {
             this.shark2.anims.play('sharkSpook', true);
             this.shark2.body.setVelocityY(-300).setSize(this.shark2.width/2, this.shark2.height/2);
-            if(this.j == 0) {
+            if(this.i == 0) {
                 this.sharkSound.play(this.sharkConfig);
             }
-            this.j++;
+            this.i++;
         }else if (Math.abs(this.pufferFish.x - this.shark2.x) < 100 && Math.abs(this.pufferFish.y - this.shark2.y) < 100 && this.pufferFishShape != 'fat'){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         
         //goal check
@@ -655,12 +650,17 @@ class Level1 extends Phaser.Scene {
 
         //game ends
         if (this.waterLevel.y == 2150) {
-            this.scene.restart();
+            this.gameOver = true;
         }
         
-        //if (this.gameOver == true) {
-        //   this.scene.start('level1Scene');
-        //}
+        if (this.gameOver == true) {
+            this.pufferFish.anims.play('dead', true);
+            this.time.delayedCall(1500, () =>{
+                this.scene.pause();
+                this.scene.launch('gameOverScene');
+            }, null, this);
+
+        }
 
 
     }

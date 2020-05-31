@@ -32,7 +32,7 @@ let config = {
     },
 
 
-    scene: [ Load, Menu, tutorialLoad, Tutorial, LevelSelect, level1Load, level2Load, level3Load, Level1, Level2, Level3, credits, PauseMenu ]
+    scene: [ Load, Menu, tutorialLoad, Tutorial, LevelSelect, level1Load, level2Load, level3Load, Level1, Level2, Level3, credits, PauseMenu, gameOver ]
 
 };
 

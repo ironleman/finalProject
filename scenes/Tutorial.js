@@ -8,6 +8,8 @@ class Tutorial extends Phaser.Scene {
 
     }
     create() {
+        this.controlLock = false;
+        this.shapeShiftable = "all";
         this.i = 0;
         this.j = 0;
         this.k = 0;
@@ -159,7 +161,13 @@ class Tutorial extends Phaser.Scene {
             key: 'kelpdance',
             frames: this.anims.generateFrameNumbers('kelp', { start: 0, end: 2, first:0}),
             frameRate: 5
-        })
+        });
+
+        this.anims.create({
+            key: 'dead',
+            frames: this.anims.generateFrameNumbers('deathAnim', { start: 0, end: 8, first: 0}),
+            frameRate: 6
+        });
         // colliders
         this.physics.add.collider(this.pufferFish, this.stone5);
         //this.physics.add.collider(this.pufferFish, this.stone4);
@@ -206,10 +214,14 @@ class Tutorial extends Phaser.Scene {
         // for pause menu
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.add.text(-600, -500, 'Press (SPACE) to pause').setScale(3).setScrollFactor(0);
+
+        pauseScene = "tutorialScene";
     } 
 
     update() {
-
+        if (this.pufferFish.x <= 3400 && this.pufferFish.x >= 2500) {
+            this.shapeShiftable = "notFat";
+        }
         //play wavy kelp animations
         this.kelp1.anims.play('kelpdance', true);
         this.kelp2.anims.play('kelpdance', true);
@@ -222,7 +234,6 @@ class Tutorial extends Phaser.Scene {
         ///////////////////////////////////////////////////////////////
         // paused menu
         if(Phaser.Input.Keyboard.JustDown(keySpace)){
-            pauseScene = "tutorialScene";
             this.scene.pause();
             this.scene.launch('pauseScene');
         }
@@ -264,55 +275,68 @@ class Tutorial extends Phaser.Scene {
         /////////////////////////////////////////////////////////////////////////////////////////
         // keyboard inputs changing size and keypad indicators
         //when key1 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation back to original form and adjust hitbox accordingly
-        this.keyboard1.on('down', () => {    
-            this.pufferFishShape = 'normal'; 
-                      
-            this.key1.tint = 0xFACADE;
-            this.key2.clearTint();
-            this.key3.clearTint();
-            this.key4.clearTint();
-            
-            this.pufferFish.anims.play('one', true);
-            this.pufferFishVelocity = 400;
-            this.pufferFish.setSize(this.pufferFish.width,this.pufferFish.height);
-            this.poofSound.play(this.poofConfig);  
+        if (this.controlLock == false){
+            this.keyboard1.on('down', () => {    
+                this.pufferFishShape = 'normal'; 
+                        
+                this.key1.tint = 0xFACADE;
+                this.key2.clearTint();
+                this.key3.clearTint();
+                this.key4.clearTint();
+                
+                this.pufferFish.anims.play('one', true);
+                this.pufferFishVelocity = 400;
+                this.pufferFish.setSize(this.pufferFish.width,this.pufferFish.height);
+                this.poofSound.play(this.poofConfig);  
+            });
+            //when key2 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation for pufferfish's longer form and adjust hitbox accordingly
+            this.keyboard2.on('down', () => {   
+                this.pufferFishShape = 'normal';              
+                this.key2.tint = 0xFACADE;
+                this.key1.clearTint();
+                this.key3.clearTint();
+                this.key4.clearTint();
+                this.pufferFish.anims.play('two', true);
+                this.pufferFishVelocity = 250;
+                this.pufferFish.setSize(420,100).setOffset(4,4);
+                this.poofSound.play(this.poofConfig);
+            });
+            //when key3 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation for pufferfish's skinnier form and adjust hitbox accordingly
+            this.keyboard3.on('down', () => {   
+                this.pufferFishShape = 'normal';         
+                this.key3.tint = 0xFACADE;
+                this.key1.clearTint();
+                this.key4.clearTint();
+                this.key2.clearTint();
+                this.pufferFish.anims.play('three', true);
+                this.pufferFishVelocity = 250;
+                this.pufferFish.setSize(130, 400);
+                this.poofSound.play(this.poofConfig);
+            });
+            //when key4 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation for the fattest pufferfish form and adjust hitbox accordingly
+            this.keyboard4.on('down', () => { 
+                if (this.shapeShiftable != "notFat") {  
+                    this.pufferFishShape = 'fat';         
+                    this.key4.tint = 0xFACADE;
+                    this.key2.clearTint();
+                    this.key1.clearTint();
+                    this.key3.clearTint();
+                    this.pufferFish.anims.play('four', true);
+                    this.pufferFishVelocity = 250;
+                    this.pufferFish.setSize(650,650);
+                    this.poofSound.play(this.poofConfig);
+                }  else {
+                 this.diplay = this.add.text(this.pufferFish.x, this.pufferFish.y, "cannot perform this here", {
+                     font: "60px", fill: "#FF0000"
+                 });
+                 this.time.delayedCall(1000, () => {
+           
+                    this.diplay.destroy();
+        
+                }, null, this);
+             }
          });
-          //when key2 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation for pufferfish's longer form and adjust hitbox accordingly
-         this.keyboard2.on('down', () => {   
-            this.pufferFishShape = 'normal';              
-            this.key2.tint = 0xFACADE;
-            this.key1.clearTint();
-            this.key3.clearTint();
-            this.key4.clearTint();
-            this.pufferFish.anims.play('two', true);
-            this.pufferFishVelocity = 250;
-            this.pufferFish.setSize(420,100).setOffset(4,4);
-            this.poofSound.play(this.poofConfig);
-         });
-          //when key3 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation for pufferfish's skinnier form and adjust hitbox accordingly
-         this.keyboard3.on('down', () => {   
-            this.pufferFishShape = 'normal';         
-            this.key3.tint = 0xFACADE;
-            this.key1.clearTint();
-            this.key4.clearTint();
-            this.key2.clearTint();
-            this.pufferFish.anims.play('three', true);
-            this.pufferFishVelocity = 250;
-            this.pufferFish.setSize(130, 400);
-            this.poofSound.play(this.poofConfig);
-         });
-          //when key4 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation for the fattest pufferfish form and adjust hitbox accordingly
-         this.keyboard4.on('down', () => {   
-            this.pufferFishShape = 'fat';         
-            this.key4.tint = 0xFACADE;
-            this.key2.clearTint();
-            this.key1.clearTint();
-            this.key3.clearTint();
-            this.pufferFish.anims.play('four', true);
-            this.pufferFishVelocity = 250;
-            this.pufferFish.setSize(650,650);
-            this.poofSound.play(this.poofConfig);
-         });
+        }
 
         ////////////////////////////////////////////////////////////////////////
         // player controls for pufferfish
@@ -418,12 +442,15 @@ class Tutorial extends Phaser.Scene {
             this.gameOver = true;
         }
         if (this.gameOver == true) {
+            this.controlLock = true;
+            this.pufferFish.anims.play('dead', true);
+            this.time.delayedCall(1500, () =>{
+            this.scene.pause();
+            this.scene.launch('gameOverScene');
+            }, null, this);
 
-           this.scene.start('tutorialScene');
         }
     }
-
-
     
 
 }
