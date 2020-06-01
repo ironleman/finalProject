@@ -180,6 +180,20 @@ class Tutorial extends Phaser.Scene {
 
         this.waterLevel = this.physics.add.sprite(0, 0, 'water').setAlpha(0.3).setOrigin(0).setScale(12);
 
+        // plays BGMusic in loop
+        // feel free to change the config
+        this.music = this.sound.add("BGMusic");
+        let musicConfig = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        }
+        this.music.play(musicConfig);
+
         this.poofSound = this.sound.add("poof");
         this.poofConfig = {
             mute: false,
@@ -225,8 +239,12 @@ class Tutorial extends Phaser.Scene {
         // for pause menu
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.add.text(-600, -500, 'Press (SPACE) to pause').setScale(3).setScrollFactor(0);
-
         pauseScene = "tutorialScene";
+        //for exiting the game
+        keyEsc= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        this.add.text(-600, -430, 'Press (ESC) to exit').setScale(3).setScrollFactor(0);
+
+
     } 
 
     update() {
@@ -243,10 +261,20 @@ class Tutorial extends Phaser.Scene {
         this.kelp7.anims.play('kelpdance', true);
        
         ///////////////////////////////////////////////////////////////
-        // paused menu
+        // paused menu (stop music when paused, then continue playing after game is resumed)
         if(Phaser.Input.Keyboard.JustDown(keySpace)){
+            this.music.pause();
             this.scene.pause();
             this.scene.launch('pauseScene');
+        }
+        else{
+            this.music.resume();
+        }
+
+         //Escape key press event that will take the player back to the main title screen
+         if(Phaser.Input.Keyboard.JustDown(keyEsc)){
+            this.game.sound.stopAll();
+            this.scene.start("menuScene");
         }
         ///////////////////////////////////////////////////////////////
         // anchor physics
@@ -464,7 +492,8 @@ class Tutorial extends Phaser.Scene {
             this.l++;
             this.controlLock = true;
             this.pufferFish.anims.play('dead', true);
-            this.time.delayedCall(1300, () =>{
+            this.time.delayedCall(1400, () =>{
+            this.game.sound.stopAll();
             this.scene.pause();
             this.scene.launch('gameOverScene');
             }, null, this);
