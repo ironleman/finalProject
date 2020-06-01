@@ -45,6 +45,7 @@ let centerY= game.config.height/2;
 var timeText;
 var timedEvent;
 let keySpace;
+let keyEsc;
 
 let pauseScene;
 // let highScore;
