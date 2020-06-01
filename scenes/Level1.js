@@ -272,6 +272,10 @@ class Level1 extends Phaser.Scene {
         // for pause menu
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.add.text(-600, -500, 'Press (SPACE) to pause').setScale(3).setScrollFactor(0);
+        pauseScene = "level1Scene";
+        //for exiting the game
+        keyEsc= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        this.add.text(-600, -430, 'Press (ESC) to exit').setScale(3).setScrollFactor(0);
 
         //collide
         this.physics.add.collider(this.pufferFish, this.rock1);
@@ -296,9 +300,6 @@ class Level1 extends Phaser.Scene {
         this.physics.add.collider(this.pufferFish, this.crate3);
         this.physics.add.collider(this.pufferFish, this.crate4);
         this.physics.add.collider(this.pufferFish, this.crate5);
-        
-
-        pauseScene = "level1Scene";
     } 
 
     update() { 
@@ -374,10 +375,20 @@ class Level1 extends Phaser.Scene {
         }
 
         ///////////////////////////////////////////////////////////////
-        // paused menu
+        // paused menu (stop music when paused, then continue playing after game is resumed)
         if(Phaser.Input.Keyboard.JustDown(keySpace)){
+            this.music.pause();
             this.scene.pause();
             this.scene.launch('pauseScene');
+        }
+        else{
+            this.music.resume();
+        }
+
+         //Escape key press event that will take the player back to the main title screen
+         if(Phaser.Input.Keyboard.JustDown(keyEsc)){
+            this.game.sound.stopAll();
+            this.scene.start("menuScene");
         }
 
         this.keyboard1.on('down', () => {    
@@ -675,8 +686,9 @@ class Level1 extends Phaser.Scene {
             }
             this.l++;
             this.pufferFish.anims.play('dead', true);
-            this.time.delayedCall(1300, () =>{
+            this.time.delayedCall(1400, () =>{
                 this.scene.pause();
+                this.game.sound.stopAll();
                 this.scene.launch('gameOverScene');
             }, null, this);
 
@@ -696,4 +708,3 @@ class Level1 extends Phaser.Scene {
         }
     }
 }
-
