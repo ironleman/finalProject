@@ -353,8 +353,8 @@ class Tutorial extends Phaser.Scene {
                 this.poofSound.play(this.poofConfig);
             });
             //when key4 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation for the fattest pufferfish form and adjust hitbox accordingly
-            this.keyboard4.on('down', () => { 
-                if (this.shapeShiftable != "notFat") {  
+           this.keyboard4.on('down', () => { 
+                 
                     this.pufferFishShape = 'fat';         
                     this.key4.tint = 0xFACADE;
                     this.key2.clearTint();
@@ -364,17 +364,7 @@ class Tutorial extends Phaser.Scene {
                     this.pufferFishVelocity = 250;
                     this.pufferFish.setSize(650,650);
                     this.poofSound.play(this.poofConfig);
-                }  else {
-                 this.diplay = this.add.text(this.pufferFish.x, this.pufferFish.y, "cannot perform this here", {
-                     font: "60px", fill: "#FF0000"
-                 });
-                 this.time.delayedCall(1000, () => {
-           
-                    this.diplay.destroy();
-        
-                }, null, this);
-             }
-         });
+                });
         }
 
         ////////////////////////////////////////////////////////////////////////
