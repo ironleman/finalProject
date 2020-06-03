@@ -18,8 +18,11 @@ class Tutorial extends Phaser.Scene {
         //some parameters
         this.gameOver = false;
         this.pufferFishShape = 'normal';
+
         // background
-        this.add.image(0, 0, 'tutorialBG').setScale(12);
+        this.add.image(centerX, centerY, 'tutorialBG').setScale(8);
+        this.add.image(5750, 500, 'tutorialBG').setScale(8);
+        this.add.image(10000, 500, 'tutorialBG').setScale(8);
 
         //temporary timer for water level decrement 
         this.initialTime = 143;         //2 min. 23 sec.
@@ -83,7 +86,15 @@ class Tutorial extends Phaser.Scene {
         this.key2 = this.add.sprite(-280, -350, 'key2').setScale(2).setOrigin(0).setScrollFactor(0);
         this.key3 = this.add.sprite(30, -350, 'key3').setScale(2).setOrigin(0).setScrollFactor(0);
         this.key4 = this.add.sprite(350, -350, 'key4').setScale(2).setOrigin(0).setScrollFactor(0);
-        
+
+        //Add a breakable crates and add their colliders with pufferfish
+        this.crate = this.physics.add.sprite(3500, 2100, 'crate').setScale(1.2);
+        this.crate.body.immovable = true;
+        this.physics.add.collider(this.pufferFish, this.crate);
+        this.crate1 = this.physics.add.sprite(3500, 1900, 'crate').setScale(1.2);
+        this.crate1.body.immovable = true;
+        this.physics.add.collider(this.pufferFish, this.crate1);
+
         //camera setup and world bounds setup
         //https://phaser.io/examples/v3/view/camera/follow-offset
         //set camera and world bounds to double the size of the background image
@@ -106,9 +117,6 @@ class Tutorial extends Phaser.Scene {
         this.kelp6 = this.add.sprite(1850, 2100, 'kelp').setScale(2);
         this.kelp7 = this.add.sprite(2200, 2100, 'kelp').setScale(2);
 
-        
-
-
         // control configs
         cursors = this.input.keyboard.createCursorKeys();
         this.keyboard1 = this.input.keyboard.addKey("ONE");
@@ -116,8 +124,6 @@ class Tutorial extends Phaser.Scene {
         this.keyboard3 = this.input.keyboard.addKey("THREE");
         this.keyboard4 = this.input.keyboard.addKey("FOUR");
 
-        this.restartKey = this.input.keyboard.addKey('R');
-        
         // Starting animation for the player
         this.anims.create({
             key: "pufferFish_anim",
@@ -215,6 +221,7 @@ class Tutorial extends Phaser.Scene {
             loop: false,
             delay: 0
         }
+
         this.tinkSound = this.sound.add("tink");
         this.tinkConfig = {
             mute: false,
@@ -236,6 +243,18 @@ class Tutorial extends Phaser.Scene {
             loop: false,
             delay: 0
         }
+
+        this.endSound = this.sound.add("awkward");
+        this.endConfig = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
+
         // for pause menu
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.add.text(-600, -500, 'Press (SPACE) to pause').setScale(3).setScrollFactor(0);
@@ -243,7 +262,6 @@ class Tutorial extends Phaser.Scene {
         //for exiting the game
         keyEsc= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         this.add.text(-600, -430, 'Press (ESC) to exit').setScale(3).setScrollFactor(0);
-
 
     } 
 
@@ -353,8 +371,7 @@ class Tutorial extends Phaser.Scene {
                 this.poofSound.play(this.poofConfig);
             });
             //when key4 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation for the fattest pufferfish form and adjust hitbox accordingly
-           this.keyboard4.on('down', () => { 
-                 
+            this.keyboard4.on('down', () => { 
                     this.pufferFishShape = 'fat';         
                     this.key4.tint = 0xFACADE;
                     this.key2.clearTint();
@@ -387,6 +404,14 @@ class Tutorial extends Phaser.Scene {
                 this.pufferFish.body.setVelocityX(0);
             }
         }
+
+        /////////////////////////////////////////////////////////////////////////////
+        //Instructional text for breaking crates when you get near them
+        if (Math.abs(this.pufferFish.x - this.crate.x) < 300) {
+        this.instructions= this.add.text(3050, 1400, "Become big", {color: "#FFFF00",stroke: "#0000FF", strokeThickness: 5}).setScale(5);
+        this.instructions1= this.add.text(3050, 1500, "to destroy", {color: "#FFFF00", stroke: "#0000FF", strokeThickness: 5}).setScale(5);
+        }
+        
         //////////////////////////////////////////////////////////////////////////////////
         // shark roaming back and forth
         if (this.shark.x >= 7000) {
@@ -434,6 +459,14 @@ class Tutorial extends Phaser.Scene {
             this.gameOver = true;
         }
 
+        //check crate collision with crate
+        if (this.physics.collide(this.pufferFish, this.crate) && this.pufferFishShape === 'fat') {
+            this.crate.destroy();
+        }
+        if (this.physics.collide(this.pufferFish, this.crate1) && this.pufferFishShape === 'fat') {
+            this.crate1.destroy();
+        }
+
         //////////////////////////////////////////////////////////////////////////////////////
         // seeing if the player is able to scare the shark
         if (Math.abs(this.pufferFish.x - this.shark.x) < 1000 && Math.abs(this.pufferFish.y - this.shark.y) < 1000 && this.pufferFishShape == 'fat') {
@@ -447,9 +480,11 @@ class Tutorial extends Phaser.Scene {
 
         // player reaching the goal check
         if(this.physics.overlap(this.pufferFish, this.goal)) {
+            this.music.stop();
             this.goal.body.setVelocityY(-300);
             this.chain.body.setVelocityY(-300);
             if (this.k == 0) {
+                   this.endSound.play(this.endConfig);
                    this.text= this.add.image(this.goal.x - 250, this.goal.y, 'textBubble').setScale(2);
             }
             this.k++;
@@ -459,7 +494,7 @@ class Tutorial extends Phaser.Scene {
         if (this.goal.y <= 0) {
             this.game.sound.stopAll();
             timedEvent.paused= true;
-            this.clock= this.time.delayedCall(7000, () => {
+            this.clock= this.time.delayedCall(4000, () => {
                 this.levelComplete = true;
     
             }, null, this);
@@ -488,6 +523,16 @@ class Tutorial extends Phaser.Scene {
             this.scene.launch('gameOverScene');
             }, null, this);
 
+        }
+    }
+    checkCollision(puff, crate) {
+        if (puff.x < crate.x + crate.width && 
+            puff.x + puff.width > crate.x && 
+            puff.y < crate.y + crate.height &&
+            puff.height + puff.y > crate.y) {
+                return true;
+        } else {
+            return false;
         }
     }
     
