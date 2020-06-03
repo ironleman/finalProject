@@ -97,6 +97,7 @@ class Load extends Phaser.Scene {
         this.load.image('key1', 'keyUI0.png');
         this.load.atlas("bubbles", "bubblesheet.png", "bubbles.json");
         this.load.audio("blip", "reverse_blip.mp3");
+        this.load.audio("awkward", "wahWahWaah.wav");
         this.load.image('rock', 'rock.png');
         this.load.image('arrow', 'arrow.png');
         this.load.image('scareShark', 'scaretheshark.png');
@@ -109,11 +110,12 @@ class Load extends Phaser.Scene {
         //add video file to scene and play the video file
         this.ocean = this.add.video(centerX, centerY, "oceanfloor");
         this.ocean.play();
+        this.ocean.setLoop(true);
         //Create team logo text at center of loading screen and set its alpha so that it's slightly visible
         this.logo= this.add.text(480, centerY, "RDSJ L.L.C.", {fontFamily: "Bangers", fontSize: "80px", color: "#FF7F50"});
         this.logo.setAlpha(0.4);
-        //create a time event that lasts 15 seconds before transitioning to the next scene
-        this.clock= this.time.delayedCall(1000, () => {
+        //create a time event that lasts 30 seconds before transitioning to the next scene
+        this.clock= this.time.delayedCall(300000, () => {
            
             this.scene.start("menuScene");
 
