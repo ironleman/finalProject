@@ -14,8 +14,13 @@ class Level1 extends Phaser.Scene {
         this.k = 0;
         this.i = 0;
         this.l = 0;
-        this.add.image(0, 0, 'level2BG').setScale(35);
         
+        //Add the background images so that they flow cohesively
+        this.add.image(centerX, centerY, 'level2BG').setScale(8);
+        this.add.image(5750, 500, 'level2BG').setScale(8);
+        this.add.image(10000, 500, 'level2BG').setScale(8);
+        
+        //more parameters and pufferfish config
         this.gameOver = false;
         this.pufferFishShape = 'normal';
         this.pufferFishVelocity = 400;
