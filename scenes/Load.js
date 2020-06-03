@@ -115,7 +115,7 @@ class Load extends Phaser.Scene {
         this.logo= this.add.text(480, centerY, "RDSJ L.L.C.", {fontFamily: "Bangers", fontSize: "80px", color: "#FF7F50"});
         this.logo.setAlpha(0.4);
         //create a time event that lasts 30 seconds before transitioning to the next scene
-        this.clock= this.time.delayedCall(300000, () => {
+        this.clock= this.time.delayedCall(30000, () => {
            
             this.scene.start("menuScene");
 
