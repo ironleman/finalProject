@@ -49,6 +49,12 @@ class Load extends Phaser.Scene {
         this.load.image('crate', 'crate.png');
         this.load.image('eel', 'eel.png');
         this.load.image('seahorse', 'seahorse.png');
+        this.load.spritesheet("snake", "seasnake.png", {
+            frameWidth: 952,
+            frameHeight: 196,
+            startFrame: 0,
+            endFrame: 1
+        });
         this.load.spritesheet("kelp", "kelp.png", {
             frameWidth: 160,
             frameHeight: 160,
