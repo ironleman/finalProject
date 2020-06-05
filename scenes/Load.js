@@ -102,10 +102,13 @@ class Load extends Phaser.Scene {
         this.load.image('arrow', 'arrow.png');
         this.load.image('scareShark', 'scaretheshark.png');
         this.load.image('Title', 'title.png');
+        this.load.image("lv3background","(new)Background(3).png");
         this.load.image("net", "FishingNet.png");
         this.load.image("turtle", "SeaTurtle.png");
         this.load.image("turtbub", "Turttextbub.png");
         this.load.image("credButton", "credButton.png");
+        this.load.image("Marlin", "clownfish.png");
+        this.load.image("lv3text", "fishbub.png");
 
     }
     create() {
