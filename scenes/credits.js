@@ -19,7 +19,7 @@ class credits extends Phaser.Scene {
         this.music = this.sound.add("BGMusic");
         let musicConfig = {
             mute: false,
-            volume: 1,
+            volume: 0.5,
             rate: 1,
             detune: 0,
             seek: 0,

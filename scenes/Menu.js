@@ -7,6 +7,8 @@ class Menu extends Phaser.Scene {
         // loads background musics
         this.load.audio('BGMusic','./assets/BGMusic.mp3');
         this.load.audio('BGMusic2', './assets/BGMusic2.mp3');
+        this.load.audio('BGMusic3', './assets/BGMusic3.mp3');
+        this.load.audio('BGMusic4', './assets/BGMusic4.mp3');
     }
     create() {
         //add the coral reef background image
@@ -76,7 +78,7 @@ class Menu extends Phaser.Scene {
         this.music = this.sound.add("BGMusic");
         let musicConfig = {
             mute: false,
-            volume: 1,
+            volume: 0.5,
             rate: 1,
             detune: 0,
             seek: 0,
