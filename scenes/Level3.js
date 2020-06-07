@@ -228,7 +228,7 @@ class Level3 extends Phaser.Scene {
         //for pause menu
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.add.text(-600, -500, 'Press (SPACE) to pause').setScale(3).setScrollFactor(0);
-        pauseScene = "level3Scene";
+        pauseScene = "level3Transition";
         //for exiting the game
         keyEsc= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         this.add.text(-600, -430, 'Press (ESC) to exit').setScale(3).setScrollFactor(0);

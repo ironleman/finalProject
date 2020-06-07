@@ -151,6 +151,15 @@ class Level2 extends Phaser.Scene {
         this.rock8a.body.immovable = true;
         this.physics.add.collider(this.pufferFish, this.rock8a);
 
+        this.angler = this.physics.add.sprite(300 , 5000, 'angler').setScale(0.5);
+        this.angler1 = this.physics.add.sprite(2500 , 5400, 'angler').setScale(0.5);
+        this.angler2 = this.physics.add.sprite(300 , 5800, 'angler').setScale(0.5);
+        this.angler3 = this.physics.add.sprite(2500 , 6200, 'angler').setScale(0.5);
+        this.angler4 = this.physics.add.sprite(300 , 6600, 'angler').setScale(0.5);
+        this.angler5 = this.physics.add.sprite(2500 , 7000, 'angler').setScale(0.5);
+        this.angler6 = this.physics.add.sprite(300 , 7400, 'angler').setScale(0.5);
+        this.angler7 = this.physics.add.sprite(2500 , 7800, 'angler').setScale(0.5);
+
         // snake
         this.snake = this.physics.add.sprite(200, 4000, 'snake').setScale(0.5);
         this.snake.body.setVelocityX(400);
@@ -178,7 +187,33 @@ class Level2 extends Phaser.Scene {
         this.shark4.body.setVelocityX(-this.sharkVel).setSize(this.shark2.width, this.shark2.height/2);
         this.shark4.setImmovable();
         
-        //have the keyboard UI sprites follow with the camera by setting their scroll factor
+       
+        //Add the water level
+        this.waterLevel = this.physics.add.sprite(0, 0, 'water').setAlpha(0.3).setOrigin(0).setScale(12);
+        
+        //Add the nets which will appear at the top of the screen
+        this.net1= this.physics.add.sprite(0, -500, 'net').setOrigin(0).setScale(5);
+        this.net2= this.physics.add.sprite(300, -500, 'net').setOrigin(0).setScale(5);
+        this.net3= this.physics.add.sprite(600, -500, 'net').setOrigin(0).setScale(5);
+        this.net4= this.physics.add.sprite(900, -500, 'net').setOrigin(0).setScale(5);
+        this.net6= this.physics.add.sprite(0, -500, 'net').setOrigin(0).setScale(5);
+        this.net7= this.physics.add.sprite(1200, -500, 'net').setOrigin(0).setScale(5);
+        this.net8= this.physics.add.sprite(1500, -500, 'net').setOrigin(0).setScale(5);
+        this.net9= this.physics.add.sprite(1800, -500, 'net').setOrigin(0).setScale(5);
+        this.net10= this.physics.add.sprite(2100, -500, 'net').setOrigin(0).setScale(5);
+        this.net11= this.physics.add.sprite(2400, -500, 'net').setOrigin(0).setScale(5);
+        this.net12= this.physics.add.sprite(2700, -500, 'net').setOrigin(0).setScale(5);
+        this.net13 =  this.physics.add.sprite(3000, -500, 'net').setOrigin(0).setScale(5);
+         //turtle - finishing goal
+         this.turtle = this.physics.add.sprite(this.rock12.x + 2500, this.rock12.y + 300, 'turtle').setOrigin(0.5);
+         this.turtle.setImmovable();
+         this.net5 = this.physics.add.sprite(this.turtle.x+20, this.turtle.y + 150, 'net').setScale(4).setOrigin(0.5);
+         this.net5.rotation= -Math.PI/2*0.5;
+         this.net5.setImmovable(); 
+
+
+
+         //have the keyboard UI sprites follow with the camera by setting their scroll factor
         this.key1 = this.add.sprite(-600, -350, 'key1').setScale(2).setOrigin(0).setScrollFactor(0);
         this.key2 = this.add.sprite(-280, -350, 'key2').setScale(2).setOrigin(0).setScrollFactor(0);
         this.key3 = this.add.sprite(30, -350, 'key3').setScale(2).setOrigin(0).setScrollFactor(0);
@@ -241,23 +276,11 @@ class Level2 extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('snake'),
             frameRate: 10, // BUG: Game crashes if exceeds this framerate. Theory?: Overlaps in animations maybe.
         });
-
-        //Add the water level
-        this.waterLevel = this.physics.add.sprite(0, 0, 'water').setAlpha(0.3).setOrigin(0).setScale(12);
-        
-        //Add the nets which will appear at the top of the screen
-        this.net1= this.physics.add.sprite(0, -500, 'net').setOrigin(0).setScale(15);
-        this.net2= this.physics.add.sprite(800, -500, 'net').setOrigin(0).setScale(15);
-        this.net3= this.physics.add.sprite(1600, -500, 'net').setOrigin(0).setScale(15);
-        this.net4= this.physics.add.sprite(2400, -500, 'net').setOrigin(0).setScale(15);
-
-         //turtle - finishing goal
-         this.turtle = this.physics.add.sprite(this.rock12.x + 2500, this.rock12.y + 300, 'turtle').setOrigin(0.5);
-         this.turtle.setImmovable();
-         this.net5 = this.physics.add.sprite(this.turtle.x+20, this.turtle.y + 150, 'net').setScale(4).setOrigin(0.5);
-         this.net5.rotation= -Math.PI/2*0.5;
-         this.net5.setImmovable(); 
-        
+        this.anims.create({
+            key: 'anglerboi',
+            frames: this.anims.generateFrameNumbers('angler'),
+            frameRate: 5, // BUG: Game crashes if exceeds this framerate. Theory?: Overlaps in animations maybe.
+        });
         // plays BGMusic3 in loop
         // feel free to change the config
         this.music = this.sound.add("BGMusic3");
@@ -336,14 +359,22 @@ class Level2 extends Phaser.Scene {
 
     update() { 
         //water level bonus
-        this.waterLevel.y += .3;
+        //this.waterLevel.y += .3;
         
         //Nets coming down toward the player
         
-        this.net1.y+=2;
-        this.net2.y+=2;
-        this.net3.y+=2;
-        this.net4.y+=2;
+        this.net1.y+=5;
+        this.net2.y+=5;
+        this.net3.y+=5;
+        this.net4.y+=5;
+        this.net6.y+=5;
+        this.net7.y+=5;
+        this.net8.y+=5;
+        this.net9.y+=5;
+        this.net10.y+=5;
+        this.net11.y+=5;
+        this.net12.y+=5;
+        this.net13.y+=5;
        
         this.physics.world.setBounds(0, this.waterLevel.y, 1920*5, 10000 - this.waterLevel.y);
 
@@ -355,6 +386,14 @@ class Level2 extends Phaser.Scene {
             this.snake.resetFlip();
         }
         this.snake.anims.play('snakeboi', true);
+        this.angler.anims.play('anglerboi', true);
+        this.angler1.anims.play('anglerboi', true);
+        this.angler2.anims.play('anglerboi', true);
+        this.angler3.anims.play('anglerboi', true);
+        this.angler4.anims.play('anglerboi', true);
+        this.angler5.anims.play('anglerboi', true);
+        this.angler6.anims.play('anglerboi', true);
+        this.angler7.anims.play('anglerboi', true);
 
         //shark aimation
         if (this.shark1.x >= 2500) {
@@ -403,6 +442,9 @@ class Level2 extends Phaser.Scene {
         if (this.physics.overlap(this.pufferFish, this.snake)){
             this.gameOver = true;
         }
+        if (this.physics.overlap(this.pufferFish, this.angler)){
+            this.gameOver = true;
+        }
          //check scare the shark
          if (Math.abs(this.pufferFish.x - this.shark1.x) < 1000 && Math.abs(this.pufferFish.y - this.shark1.y) < 1000 && this.pufferFishShape == 'fat') {
             this.shark1.anims.play('sharkSpook', true);
@@ -439,7 +481,7 @@ class Level2 extends Phaser.Scene {
 
         if (this.anchor1.y >= 800) {
             this.anchor1.setVelocityY(-300);
-            if (Math.abs(this.pufferFish.x - this.anchor1.x) < 700) {
+            if (Math.abs(this.pufferFish.y - this.anchor1.y) < 700) {
                 this.tinkSound.play(this.tinkConfig);
             }
         } else if (this.anchor1.y <= 300) {
@@ -469,12 +511,174 @@ class Level2 extends Phaser.Scene {
         if (this.physics.overlap(this.pufferFish, this.net4)){
             this.gameOver = true;
         }
+        if (this.physics.overlap(this.pufferFish, this.net6)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.net7)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.net8)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.net9)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.net10)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.net11)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.net12)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.net13)){
+            this.gameOver = true;
+        }
         
 
         if (this.physics.overlap(this.pufferFish, this.snake)){
             this.gameOver = true;
         }
-       
+        if (this.physics.overlap(this.pufferFish, this.angler1)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.angler2)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.angler3)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.angler4)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.angler5)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.angler6)){
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.angler7)){
+            this.gameOver = true;
+        }
+
+
+
+
+        /////////////////////////
+        // angler physics
+        // angler 0
+        if (this.pufferFish.y - this.angler.y < 0 && this.pufferFish.y - this.angler.y > -500) {
+            this.angler.body.setVelocityY(-100);
+        } else if (this.pufferFish.y - this.angler.y > 0 && this.pufferFish.y - this.angler.y < 500) {
+            this.angler.body.setVelocityY(100);
+        }
+        
+        if (this.pufferFish.x - this.angler.x < 0 && this.pufferFish.x - this.angler.x > -2000) {
+            this.angler.body.setVelocityX(-100);
+            this.angler.setFlipX(true);
+        } else if (this.pufferFish.x - this.angler.x > 0 && this.pufferFish.x - this.angler.x < 2000) {
+            this.angler.body.setVelocityX(100);
+            this.angler.resetFlip();
+        }
+        // angler 1
+        if (this.pufferFish.y - this.angler1.y < 0 && this.pufferFish.y - this.angler1.y > -500) {
+            this.angler1.body.setVelocityY(-100);
+        } else if (this.pufferFish.y - this.angler1.y > 0 && this.pufferFish.y - this.angler1.y < 500) {
+            this.angler1.body.setVelocityY(100);
+        }
+        
+        if (this.pufferFish.x - this.angler1.x < 0 && this.pufferFish.x - this.angler1.x > -2000) {
+            this.angler1.body.setVelocityX(-100);
+            this.angler1.setFlipX(true);
+        } else if (this.pufferFish.x - this.angler1.x > 0 && this.pufferFish.x - this.angler1.x < 2000) {
+            this.angler1.body.setVelocityX(100);
+            this.angler1.resetFlip();
+        }
+        // angler 2
+        if (this.pufferFish.y - this.angler2.y < 0 && this.pufferFish.y - this.angler2.y > -500) {
+            this.angler2.body.setVelocityY(-100);
+        } else if (this.pufferFish.y - this.angler2.y > 0 && this.pufferFish.y - this.angler2.y < 500) {
+            this.angler2.body.setVelocityY(100);
+        }
+        
+        if (this.pufferFish.x - this.angler2.x < 0 && this.pufferFish.x - this.angler2.x > -2000) {
+            this.angler2.body.setVelocityX(-100);
+            this.angler2.setFlipX(true);
+        } else if (this.pufferFish.x - this.angler2.x > 0 && this.pufferFish.x - this.angler2.x < 2000) {
+            this.angler2.body.setVelocityX(100);
+            this.angler2.resetFlip();
+        }
+        // angler 3
+        if (this.pufferFish.y - this.angler3.y < 0 && this.pufferFish.y - this.angler3.y > -500) {
+            this.angler3.body.setVelocityY(-100);
+        } else if (this.pufferFish.y - this.angler3.y > 0 && this.pufferFish.y - this.angler3.y < 500) {
+            this.angler3.body.setVelocityY(100);
+        }
+        
+        if (this.pufferFish.x - this.angler3.x < 0 && this.pufferFish.x - this.angler3.x > -2000) {
+            this.angler3.body.setVelocityX(-100);
+            this.angler3.setFlipX(true);
+        } else if (this.pufferFish.x - this.angler3.x > 0 && this.pufferFish.x - this.angler3.x < 2000) {
+            this.angler3.body.setVelocityX(100);
+            this.angler3.resetFlip();
+        }
+        // angler 4
+        if (this.pufferFish.y - this.angler4.y < 0 && this.pufferFish.y - this.angler4.y > -500) {
+            this.angler4.body.setVelocityY(-100);
+        } else if (this.pufferFish.y - this.angler4.y > 0 && this.pufferFish.y - this.angler4.y < 500) {
+            this.angler4.body.setVelocityY(100);
+        }
+        
+        if (this.pufferFish.x - this.angler4.x < 0 && this.pufferFish.x - this.angler4.x > -2000) {
+            this.angler4.body.setVelocityX(-100);
+            this.angler4.setFlipX(true);
+        } else if (this.pufferFish.x - this.angler4.x > 0 && this.pufferFish.x - this.angler4.x < 2000) {
+            this.angler4.body.setVelocityX(100);
+            this.angler4.resetFlip();
+        }
+        // angler 5
+        if (this.pufferFish.y - this.angler5.y < 0 && this.pufferFish.y - this.angler5.y > -500) {
+            this.angler5.body.setVelocityY(-100);
+        } else if (this.pufferFish.y - this.angler5.y > 0 && this.pufferFish.y - this.angler5.y < 500) {
+            this.angler5.body.setVelocityY(100);
+        }
+        
+        if (this.pufferFish.x - this.angler5.x < 0 && this.pufferFish.x - this.angler5.x > -2000) {
+            this.angler5.body.setVelocityX(-100);
+            this.angler5.setFlipX(true);
+        } else if (this.pufferFish.x - this.angler5.x > 0 && this.pufferFish.x - this.angler5.x < 2000) {
+            this.angler5.body.setVelocityX(100);
+            this.angler5.resetFlip();
+        }
+        // angler 6
+        if (this.pufferFish.y - this.angler6.y < 0 && this.pufferFish.y - this.angler6.y > -500) {
+            this.angler6.body.setVelocityY(-100);
+        } else if (this.pufferFish.y - this.angler6.y > 0 && this.pufferFish.y - this.angler6.y < 500) {
+            this.angler6.body.setVelocityY(100);
+        }
+        
+        if (this.pufferFish.x - this.angler6.x < 0 && this.pufferFish.x - this.angler6.x > -2000) {
+            this.angler6.body.setVelocityX(-100);
+            this.angler6.setFlipX(true);
+        } else if (this.pufferFish.x - this.angler6.x > 0 && this.pufferFish.x - this.angler6.x < 2000) {
+            this.angler6.body.setVelocityX(100);
+            this.angler6.resetFlip();
+        }
+        // angler 7
+        if (this.pufferFish.y - this.angler7.y < 0 && this.pufferFish.y - this.angler7.y > -500) {
+            this.angler7.body.setVelocityY(-100);
+        } else if (this.pufferFish.y - this.angler7.y > 0 && this.pufferFish.y - this.angler7.y < 500) {
+            this.angler7.body.setVelocityY(100);
+        }
+        
+        if (this.pufferFish.x - this.angler7.x < 0 && this.pufferFish.x - this.angler7.x > -2000) {
+            this.angler7.body.setVelocityX(-100);
+            this.angler7.setFlipX(true);
+        } else if (this.pufferFish.x - this.angler7.x > 0 && this.pufferFish.x - this.angler7.x < 2000) {
+            this.angler7.body.setVelocityX(100);
+            this.angler7.resetFlip();
+        }
         ///////////////////////////////////////////////////////////////
         // paused menu (stop music when paused, then continue playing after game is resumed)
         if(Phaser.Input.Keyboard.JustDown(keySpace)){
@@ -571,15 +775,21 @@ class Level2 extends Phaser.Scene {
         //goal check
         if(this.physics.overlap(this.pufferFish, this.turtle)) {
             this.music.stop();
+            this.turtle.y -= 0;
+            this.net5.y -= 4;
             if (this.l == 0) {
                    this.endSound.play(this.endConfig);
                    this.text= this.add.image(this.turtle.x - 100, this.turtle.y - 100, 'turtbub').setScale(2);
             }
             this.l++;
+            this.clock= this.time.delayedCall(5000, () => {
+                this.levelComplete = true;
+    
+            }, null, this);
         }
         
         if (this.levelComplete == true) {
-            this.scene.start('level2Transition');
+            this.scene.start('level3Transition');
         }
 
         //game ends

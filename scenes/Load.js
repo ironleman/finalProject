@@ -49,6 +49,12 @@ class Load extends Phaser.Scene {
         this.load.image('crate', 'crate.png');
         this.load.image('eel', 'eel.png');
         this.load.image('seahorse', 'seahorse.png');
+        this.load.spritesheet("angler", "angler.png", {
+            frameWidth: 560,
+            frameHeight: 448,
+            startFrame: 0,
+            endFrame: 1
+        });
         this.load.spritesheet("snake", "seasnake.png", {
             frameWidth: 952,
             frameHeight: 196,
@@ -122,7 +128,7 @@ class Load extends Phaser.Scene {
         this.logo= this.add.text(480, centerY, "RDSJ L.L.C.", {fontFamily: "Bangers", fontSize: "80px", color: "#FF7F50"});
         this.logo.setAlpha(0.4);
         //create a time event that lasts 30 seconds before transitioning to the next scene
-        this.clock= this.time.delayedCall(30000, () => {
+        this.clock= this.time.delayedCall(2000, () => {
            
             this.scene.start("menuScene");
 
