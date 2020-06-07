@@ -14,12 +14,12 @@ class Level1 extends Phaser.Scene {
         this.k = 0;
         this.i = 0;
         this.l = 0;
-        
+
         //Add the background images so that they flow cohesively
         this.add.image(centerX, centerY, 'level2BG').setScale(8);
         this.add.image(5750, 500, 'level2BG').setScale(8);
         this.add.image(10000, 500, 'level2BG').setScale(8);
-        
+
         //more parameters and pufferfish config
         this.gameOver = false;
         this.pufferFishShape = 'normal';
@@ -264,6 +264,16 @@ class Level1 extends Phaser.Scene {
             loop: false,
             delay: 0
         }
+        this.endSound = this.sound.add("awkward");
+        this.endConfig = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
         this.sharkSound = this.sound.add("sharkScream");
         this.sharkConfig = {
             mute: false,
@@ -434,7 +444,7 @@ class Level1 extends Phaser.Scene {
             this.poofSound.play(this.poofConfig);
          });
           //when key4 is pressed, give it #FACADE tint, clear tint of other UI keys, play animation for the fattest pufferfish form and adjust hitbox accordingly
-         this.keyboard4.on('down', () => {   
+          this.keyboard4.on('down', () => {   
             this.pufferFishShape = 'fat';         
             this.key4.tint = 0xFACADE;
             this.key2.clearTint();
@@ -655,23 +665,21 @@ class Level1 extends Phaser.Scene {
         
         //goal check
         if(this.physics.overlap(this.pufferFish, this.seahorse)) {
+            this.music.stop();
             this.seahorse.resetFlip();
             this.seahorse.body.setVelocityX(300);
             this.anchor7.body.setVelocityY(300);
             if (this.k == 0) {
+                   this.endSound.play(this.endConfig);
                    this.text= this.add.image(this.seahorse.x - 100, this.seahorse.y - 100, 'level1Text').setScale(1.5);
             }
             this.k++;
-        }
-        if (this.seahorse.x >= this.rock15.x + 1000) {
-            this.game.sound.stopAll();
-            //timedEvent.paused= true;
-            this.clock= this.time.delayedCall(5000, () => {
+            this.clock= this.time.delayedCall(7000, () => {
                 this.levelComplete = true;
     
             }, null, this);
-   
         }
+        
         if (this.levelComplete == true) {
             this.scene.start('level2Transition');
         }
