@@ -258,12 +258,12 @@ class Level2 extends Phaser.Scene {
          this.net5.rotation= -Math.PI/2*0.5;
          this.net5.setImmovable(); 
         
-        // plays BGMusic2 in loop
+        // plays BGMusic3 in loop
         // feel free to change the config
-        this.music = this.sound.add("BGMusic2");
+        this.music = this.sound.add("BGMusic3");
         let musicConfig = {
             mute: false,
-            volume: 1,
+            volume: .5,
             rate: 1,
             detune: 0,
             seek: 0,
