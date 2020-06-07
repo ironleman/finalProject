@@ -45,6 +45,7 @@ class Menu extends Phaser.Scene {
         })
         //created event where mouse clicked on play button transitions to the next scene
         playbutton.on('pointerdown',function(pointer){
+            self.music.stop();
             self.scene.start("tutorialTransition");
         })
         //created event where mouse clicked on level select button transitions to the next scene

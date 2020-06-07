@@ -8,14 +8,20 @@ class Level1 extends Phaser.Scene {
 
     }
     create() {
-
+        this.controllerLock = false;
         //some parameters
         this.j = 0;
         this.k = 0;
-
-        this.add.image(0, 0, 'level2BG').setScale(35);
+        this.i = 0;
+        this.l = 0;
         
-
+        //Add the background images so that they flow cohesively
+        this.add.image(centerX, centerY, 'level2BG').setScale(8);
+        this.add.image(5750, 500, 'level2BG').setScale(8);
+        this.add.image(10000, 500, 'level2BG').setScale(8);
+        
+        //more parameters and pufferfish config
+        this.gameOver = false;
         this.pufferFishShape = 'normal';
         this.pufferFishVelocity = 400;
         this.pufferFish = this.physics.add.sprite(centerX, centerY + 700, 'pufferFish').setScale(0.6);
@@ -203,7 +209,13 @@ class Level1 extends Phaser.Scene {
             key: 'kelpdance',
             frames: this.anims.generateFrameNumbers('kelp', { start: 0, end: 2, first:0}),
             frameRate: 5
-        })
+        });
+
+        this.anims.create({
+            key: 'dead',
+            frames: this.anims.generateFrameNumbers('deathAnim', { start: 0, end: 8, first: 0}),
+            frameRate: 6
+        });
 
         this.waterLevel = this.physics.add.sprite(0, 0, 'water').setAlpha(0.3).setOrigin(0).setScale(12);
 
@@ -242,7 +254,16 @@ class Level1 extends Phaser.Scene {
             loop: false,
             delay: 0
         }
-
+        this.deathSound = this.sound.add("deathSound");
+        this.deathConfig= {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
         this.sharkSound = this.sound.add("sharkScream");
         this.sharkConfig = {
             mute: false,
@@ -256,6 +277,10 @@ class Level1 extends Phaser.Scene {
         // for pause menu
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.add.text(-600, -500, 'Press (SPACE) to pause').setScale(3).setScrollFactor(0);
+        pauseScene = "level1Scene";
+        //for exiting the game
+        keyEsc= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        this.add.text(-600, -430, 'Press (ESC) to exit').setScale(3).setScrollFactor(0);
 
         //collide
         this.physics.add.collider(this.pufferFish, this.rock1);
@@ -280,7 +305,6 @@ class Level1 extends Phaser.Scene {
         this.physics.add.collider(this.pufferFish, this.crate3);
         this.physics.add.collider(this.pufferFish, this.crate4);
         this.physics.add.collider(this.pufferFish, this.crate5);
-        
     } 
 
     update() { 
@@ -317,7 +341,7 @@ class Level1 extends Phaser.Scene {
 
         this.physics.world.setBounds(0, this.waterLevel.y, 1920*5, 2150 - this.waterLevel.y);
 
-        //check eel collision
+        /*check eel collision
         if (this.physics.overlap(this.pufferFish, this.eel)) {
             this.music.stop();
             this.scene.restart();
@@ -334,7 +358,7 @@ class Level1 extends Phaser.Scene {
             this.music.stop();
             this.scene.restart();
         }
-    
+    */
         //check crate collision
         if (this.physics.collide(this.pufferFish, this.crate) && this.pufferFishShape === 'fat') {
             this.crate.destroy();
@@ -356,11 +380,20 @@ class Level1 extends Phaser.Scene {
         }
 
         ///////////////////////////////////////////////////////////////
-        // paused menu
+        // paused menu (stop music when paused, then continue playing after game is resumed)
         if(Phaser.Input.Keyboard.JustDown(keySpace)){
-            pauseScene = "level1Scene";
+            this.music.pause();
             this.scene.pause();
             this.scene.launch('pauseScene');
+        }
+        else{
+            this.music.resume();
+        }
+
+         //Escape key press event that will take the player back to the main title screen
+         if(Phaser.Input.Keyboard.JustDown(keyEsc)){
+            this.game.sound.stopAll();
+            this.scene.start("menuScene");
         }
 
         this.keyboard1.on('down', () => {    
@@ -415,23 +448,24 @@ class Level1 extends Phaser.Scene {
 
         ////////////////////////////////////////////////////////////////////////
         // player controls for pufferfish
-        if(cursors.up.isDown) {
-            this.pufferFish.body.setVelocityY(-this.pufferFishVelocity);
-        } else if (cursors.down.isDown) {
-            this.pufferFish.body.setVelocityY(this.pufferFishVelocity);
-        } else {
-            this.pufferFish.body.setVelocityY(0);
+        if (this.controllerLock == false) {
+            if(cursors.up.isDown) {
+                this.pufferFish.body.setVelocityY(-this.pufferFishVelocity);
+            } else if (cursors.down.isDown) {
+                this.pufferFish.body.setVelocityY(this.pufferFishVelocity);
+            } else {
+                this.pufferFish.body.setVelocityY(0);
+            }
+            if(cursors.left.isDown) {
+                this.pufferFish.body.setVelocityX(-this.pufferFishVelocity);
+                this.pufferFish.setFlipX(true);
+            } else if (cursors.right.isDown) {
+                this.pufferFish.body.setVelocityX(this.pufferFishVelocity);
+                this.pufferFish.resetFlip();
+            } else {
+                this.pufferFish.body.setVelocityX(0);
+            }
         }
-        if(cursors.left.isDown) {
-            this.pufferFish.body.setVelocityX(-this.pufferFishVelocity);
-            this.pufferFish.setFlipX(true);
-        } else if (cursors.right.isDown) {
-            this.pufferFish.body.setVelocityX(this.pufferFishVelocity);
-            this.pufferFish.resetFlip();
-        } else {
-            this.pufferFish.body.setVelocityX(0);
-        }
-
         //anchor animation
         //anchor#1
         if (this.anchor1.y > 350) {
@@ -550,46 +584,41 @@ class Level1 extends Phaser.Scene {
 
         //check collision to restart
         if (this.physics.overlap(this.pufferFish, this.anchor1)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.anchor2)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.anchor3)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.anchor4)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.anchor5)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.anchor6)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.eel)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.eel1)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.eel2)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
         if (this.physics.overlap(this.pufferFish, this.eel3)){
-            this.music.stop();
-            this.scene.restart();
+            this.gameOver = true;
         }
-        
+        if (this.physics.overlap(this.shark1, this.pufferFish)) {
+            this.gameOver = true;
+        }
+        if (this.physics.overlap(this.pufferFish, this.shark2)) {
+            this.gameOver = true;
+        }
         //shark aimation
         if (this.shark1.x >= this.anchor5.x+200) {
             this.shark1.body.setVelocityX(-this.sharkVel);
@@ -607,27 +636,21 @@ class Level1 extends Phaser.Scene {
         }
 
         //check scare the shark
-        if (Math.abs(this.pufferFish.x - this.shark1.x) < 300 && Math.abs(this.pufferFish.y - this.shark1.y) < 300 && this.pufferFishShape == 'fat') {
+        if (Math.abs(this.pufferFish.x - this.shark1.x) < 1000 && Math.abs(this.pufferFish.y - this.shark1.y) < 1000 && this.pufferFishShape == 'fat') {
             this.shark1.anims.play('sharkSpook', true);
             this.shark1.body.setVelocityY(-300).setSize(this.shark1.width/2, this.shark1.height/2);
             if(this.j == 0) {
                 this.sharkSound.play(this.sharkConfig);
             }
             this.j++;
-        }else if (Math.abs(this.pufferFish.x - this.shark1.x) < 100 && Math.abs(this.pufferFish.y - this.shark1.y) < 100 && this.pufferFishShape != 'fat'){
-            this.music.stop();
-            this.scene.restart();
         }
-        if (Math.abs(this.pufferFish.x - this.shark2.x) < 500 && Math.abs(this.pufferFish.y - this.shark2.y) < 500 && this.pufferFishShape == 'fat') {
+        if (Math.abs(this.pufferFish.x - this.shark2.x) < 1000 && Math.abs(this.pufferFish.y - this.shark2.y) < 1000 && this.pufferFishShape == 'fat') {
             this.shark2.anims.play('sharkSpook', true);
             this.shark2.body.setVelocityY(-300).setSize(this.shark2.width/2, this.shark2.height/2);
-            if(this.j == 0) {
+            if(this.i == 0) {
                 this.sharkSound.play(this.sharkConfig);
             }
-            this.j++;
-        }else if (Math.abs(this.pufferFish.x - this.shark2.x) < 100 && Math.abs(this.pufferFish.y - this.shark2.y) < 100 && this.pufferFishShape != 'fat'){
-            this.music.stop();
-            this.scene.restart();
+            this.i++;
         }
         
         //goal check
@@ -655,12 +678,26 @@ class Level1 extends Phaser.Scene {
 
         //game ends
         if (this.waterLevel.y == 2150) {
-            this.scene.restart();
+            this.gameOver = true;
         }
         
-        //if (this.gameOver == true) {
-        //   this.scene.start('level1Scene');
-        //}
+        if (this.gameOver == true) {
+            this.controllerLock = true;
+            this.pufferFish.body.setVelocityX(0);
+            this.pufferFish.body.setVelocityY(0);
+
+            if (this.l == 0) {
+                this.deathSound.play(this.deathConfig);
+            }
+            this.l++;
+            this.pufferFish.anims.play('dead', true);
+            this.time.delayedCall(1400, () =>{
+                this.scene.pause();
+                this.game.sound.stopAll();
+                this.scene.launch('gameOverScene');
+            }, null, this);
+
+        }
 
 
     }
@@ -676,4 +713,3 @@ class Level1 extends Phaser.Scene {
         }
     }
 }
-

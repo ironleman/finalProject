@@ -32,6 +32,7 @@ class Load extends Phaser.Scene {
         this.load.image('chain', 'Chain.png');
         this.load.audio('poof', 'poof.wav');
         this.load.audio('tink', 'tink.wav');
+        this.load.audio('deathSound', 'deathsound.wav');
         this.load.audio('sharkScream', 'sharkScream.ogg');
         this.load.audio('levelStart', 'levelStart.wav');
         this.load.image('level1BG', 'level1bg.png');
@@ -40,9 +41,20 @@ class Load extends Phaser.Scene {
         this.load.image('level3load', 'level3.png');
         this.load.image('waterPickup', 'water.png');
         this.load.image('level2BG', 'level2bg.png');
+        this.load.image("resume", "resumeButton.png");
+        this.load.image("restart", "restartButton.png");
+        this.load.image("Pbackground", "pauseBackground.png");
+        this.load.image("menu", "menuButton.png");
+        this.load.image("gameOver", "GameOverScreen.png");
         this.load.image('crate', 'crate.png');
         this.load.image('eel', 'eel.png');
         this.load.image('seahorse', 'seahorse.png');
+        this.load.spritesheet("snake", "seasnake.png", {
+            frameWidth: 952,
+            frameHeight: 196,
+            startFrame: 0,
+            endFrame: 1
+        });
         this.load.spritesheet("kelp", "kelp.png", {
             frameWidth: 160,
             frameHeight: 160,
@@ -71,6 +83,10 @@ class Load extends Phaser.Scene {
             frameWidth: 640,
             frameHeight: 640,
         });
+        this.load.spritesheet("deathAnim", "deathAnim.png", {
+            frameWidth: 408,
+            frameHeight: 255,
+        })
         this.load.video("oceanfloor", "Ocean Floor.mp4");
         this.load.image("play", "Play Button.png");
         this.load.image("select", "SelectionButton.png");
@@ -81,10 +97,18 @@ class Load extends Phaser.Scene {
         this.load.image('key1', 'keyUI0.png');
         this.load.atlas("bubbles", "bubblesheet.png", "bubbles.json");
         this.load.audio("blip", "reverse_blip.mp3");
+        this.load.audio("awkward", "wahWahWaah.wav");
         this.load.image('rock', 'rock.png');
         this.load.image('arrow', 'arrow.png');
         this.load.image('scareShark', 'scaretheshark.png');
         this.load.image('Title', 'title.png');
+        this.load.image("lv3background","(new)Background(3).png");
+        this.load.image("net", "FishingNet.png");
+        this.load.image("turtle", "SeaTurtle.png");
+        this.load.image("turtbub", "Turttextbub.png");
+        this.load.image("credButton", "credButton.png");
+        this.load.image("Marlin", "clownfish.png");
+        this.load.image("lv3text", "fishbub.png");
 
     }
     create() {
@@ -93,11 +117,12 @@ class Load extends Phaser.Scene {
         //add video file to scene and play the video file
         this.ocean = this.add.video(centerX, centerY, "oceanfloor");
         this.ocean.play();
+        this.ocean.setLoop(true);
         //Create team logo text at center of loading screen and set its alpha so that it's slightly visible
         this.logo= this.add.text(480, centerY, "RDSJ L.L.C.", {fontFamily: "Bangers", fontSize: "80px", color: "#FF7F50"});
         this.logo.setAlpha(0.4);
-        //create a time event that lasts 15 seconds before transitioning to the next scene
-        this.clock= this.time.delayedCall(1000, () => {
+        //create a time event that lasts 30 seconds before transitioning to the next scene
+        this.clock= this.time.delayedCall(30000, () => {
            
             this.scene.start("menuScene");
 

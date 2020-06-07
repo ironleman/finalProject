@@ -23,6 +23,8 @@ class LevelSelect extends Phaser.Scene {
         LV2button.body.setSize(LV2button.width/4, LV2button.height/4.5).setOffset(103,85);
         let LV3button= this.physics.add.sprite(centerX+ 500, centerY, "lv3button").setInteractive().setScale(2);
         LV3button.body.setSize(LV3button.width/4, LV3button.height/4.5).setOffset(103,85);
+        let credbutton= this.physics.add.sprite(centerX, centerY+250, "credButton").setInteractive().setScale(1);
+        credbutton.body.setSize(credbutton.width/2.5, credbutton.height/4.5).setOffset(105,85);
 
         //fixed scope issue in listeners with this
         const self= this;
@@ -78,12 +80,21 @@ class LevelSelect extends Phaser.Scene {
             LV3button.setAlpha(1);
         })
 
+        //lower opacity alpha of credits button and play blip sound effect when mouse cursor is over it
+          credbutton.on('pointerover',function(pointer){
+            credbutton.setAlpha(0.3);
+            self.sound.play("blip");
+        })
+        //set alpha of credits button to its normal setting and no sound effect once mouse pointer is away from it
+        credbutton.on('pointerout',function(pointer){
+            credbutton.setAlpha(1);
+        })
+
         //created event where mouse clicked on tutorial button transitions to the next scene
         tutobutton.on('pointerdown',function(pointer){
             self.music.stop();
             self.scene.start("tutorialTransition");
         })
-        
         
         //created event where mouse clicked on level 1 button transitions to the next scene
         LV1button.on('pointerdown',function(pointer){
@@ -91,8 +102,7 @@ class LevelSelect extends Phaser.Scene {
             self.scene.start("level1Transition");
         })
        
-
-         //created event where mouse clicked on level 2 button transitions to the next scene
+        //created event where mouse clicked on level 2 button transitions to the next scene
         LV2button.on('pointerdown',function(pointer){
             self.music.stop();
             self.scene.start("level2Transition");
@@ -101,6 +111,11 @@ class LevelSelect extends Phaser.Scene {
         LV3button.on('pointerdown',function(pointer){
             self.music.stop();
             self.scene.start("level3Transition");
+        })
+        //created event where mouse clicked on credits button transitions to the credits scene
+        credbutton.on('pointerdown',function(pointer){
+            self.music.stop();
+            self.scene.start("creditsScene");
         })
         
 
