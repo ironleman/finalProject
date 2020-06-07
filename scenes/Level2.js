@@ -362,19 +362,18 @@ class Level2 extends Phaser.Scene {
         //this.waterLevel.y += .3;
         
         //Nets coming down toward the player
-        
-        this.net1.y+=5;
-        this.net2.y+=5;
-        this.net3.y+=5;
-        this.net4.y+=5;
-        this.net6.y+=5;
-        this.net7.y+=5;
-        this.net8.y+=5;
-        this.net9.y+=5;
-        this.net10.y+=5;
-        this.net11.y+=5;
-        this.net12.y+=5;
-        this.net13.y+=5;
+        this.net1.y+=4;
+        this.net2.y+=4;
+        this.net3.y+=4;
+        this.net4.y+=4;
+        this.net6.y+=4;
+        this.net7.y+=4;
+        this.net8.y+=4;
+        this.net9.y+=4;
+        this.net10.y+=4;
+        this.net11.y+=4;
+        this.net12.y+=4;
+        this.net13.y+=4;
        
         this.physics.world.setBounds(0, this.waterLevel.y, 1920*5, 10000 - this.waterLevel.y);
 
@@ -767,13 +766,33 @@ class Level2 extends Phaser.Scene {
             }
         }
 
-        if (Math.abs(this.pufferFish.x - this.turtle.x) < 900) {
+        if (Math.abs(this.pufferFish.x - this.turtle.x) < 350) {
             this.turtle.y-=4;
             this.net5.y=this.turtle.y;
         }
 
         //goal check
         if(this.physics.overlap(this.pufferFish, this.turtle)) {
+            this.net1.destroy();
+            this.net2.destroy();
+            this.net3.destroy();
+            this.net4.destroy();
+            this.net6.destroy();
+            this.net7.destroy();
+            this.net8.destroy();
+            this.net9.destroy();
+            this.net10.destroy();
+            this.net11.destroy();
+            this.net12.destroy();
+            this.net13.destroy();
+            this.angler.setVelocityX(-1000);
+            this.angler1.setVelocityX(-1000);
+            this.angler2.setVelocityX(-1000);
+            this.angler3.setVelocityX(-1000);
+            this.angler4.setVelocityX(-1000);
+            this.angler5.setVelocityX(-1000);
+            this.angler6.setVelocityX(-1000);
+            this.angler7.setVelocityX(-1000);
             this.music.stop();
             this.turtle.y -= 0;
             this.net5.y -= 4;
@@ -782,7 +801,7 @@ class Level2 extends Phaser.Scene {
                    this.text= this.add.image(this.turtle.x - 100, this.turtle.y - 100, 'turtbub').setScale(2);
             }
             this.l++;
-            this.clock= this.time.delayedCall(5000, () => {
+            this.clock= this.time.delayedCall(7000, () => {
                 this.levelComplete = true;
     
             }, null, this);
