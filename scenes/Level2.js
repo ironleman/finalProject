@@ -286,7 +286,7 @@ class Level2 extends Phaser.Scene {
         this.music = this.sound.add("BGMusic3");
         let musicConfig = {
             mute: false,
-            volume: .25,
+            volume: .5,
             rate: 1,
             detune: 0,
             seek: 0,
