@@ -7,6 +7,62 @@ class Load extends Phaser.Scene {
         // set load path for assets
         this.load.path = "./assets/";
         //load all necessary assets
+        //load all necessary assets
+            //set background color to navy blue
+            this.cameras.main.setBackgroundColor("#10267B");
+            //https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/
+            //Tutorial used for progress bar loading
+            //create progress bar
+            let progressBar = this.add.graphics();
+            let progressBox = this.add.graphics();
+            progressBox.fillStyle(0xFFFF00, 0.8);
+            progressBox.fillRect(240, 270, 320, 50);
+            let width = this.cameras.main.width;
+            let height = this.cameras.main.height;
+            let loadingText = this.make.text({
+                x: width / 2,
+                y: height / 2 - 50,
+                text: 'Loading...',
+                style: {
+                    font: '20px monospace',
+                    fill: '	#FFFF00'
+                }
+            });
+            loadingText.setOrigin(0.5, 0.5);
+
+            let percentText = this.make.text({
+                x: width / 2,
+                y: height / 2 - 5,
+                text: '0%',
+                style: {
+                    font: '18px monospace',
+                    fill: '	#FFFF00'
+                }
+            });
+            percentText.setOrigin(0.5, 0.5);
+        
+            let assetText = this.make.text({
+                x: width / 2,
+                y: height / 2 + 50,
+                text: '',
+                style: {
+                    font: '18px monospace',
+                    fill: '	#FFFF00'
+                }
+            });
+            assetText.setOrigin(0.5, 0.5);
+
+        this.load.on('fileprogress', function (file) {
+                assetText.setText('Loading asset: ' + file.key);
+            });
+
+        this.load.on("progress", function (value){ 
+            percentText.setText(parseInt(value * 100) + '%');
+            progressBar.clear();
+            progressBar.fillStyle(0xffffff, 1);
+            progressBar.fillRect(250, 280, 300 * value, 30)
+
+        });
         this.load.image("corals", "Coral Reef.png");
         this.load.image("LSbackground", "Background (1).png");
         this.load.image('arrowKeys', 'arrows.png');
@@ -115,6 +171,12 @@ class Load extends Phaser.Scene {
         this.load.image("credButton", "credButton.png");
         this.load.image("Marlin", "clownfish.png");
         this.load.image("lv3text", "fishbub.png");
+        this.load.once('complete', ()=>{
+            progressBar.destroy();
+            progressBox.destroy();
+            loadingText.destroy();
+            assetText.destroy();
+        });
 
     }
     create() {
@@ -127,8 +189,8 @@ class Load extends Phaser.Scene {
         //Create team logo text at center of loading screen and set its alpha so that it's slightly visible
         this.logo= this.add.text(480, centerY, "RDSJ L.L.C.", {fontFamily: "Bangers", fontSize: "80px", color: "#FF7F50"});
         this.logo.setAlpha(0.4);
-        //create a time event that lasts 30 seconds before transitioning to the next scene
-        this.clock= this.time.delayedCall(2000, () => {
+        //create a time event that lasts 10 seconds before transitioning to the next scene
+        this.clock= this.time.delayedCall(10000, () => {
            
             this.scene.start("menuScene");
 
